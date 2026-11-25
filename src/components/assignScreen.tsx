@@ -28,8 +28,9 @@ export function AssignScreen({ supportCase }: AssignScreenProps) {
   const [selectedAgentId, setSelectedAgentId] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  
   const { id, subject, priority, category, status, agentId, description } = supportCase;
+  const agentList = agents.filter((agent) => agent.specialty === category)
   const priorityInfo = PRIORITY_MAP[priority];
   const categoryInfo = CATEGORY_MAP[category];
 
@@ -74,7 +75,7 @@ export function AssignScreen({ supportCase }: AssignScreenProps) {
           onChange={(e) => setSelectedAgentId(e.target.value)}
         >
           <option value="">-- Select an agent --</option>
-          {agents.map((agent) => (
+          {agentList.map((agent) => (
             <option key={agent.id} value={agent.id}>
               {agent.firstName} {agent.lastName}
             </option>

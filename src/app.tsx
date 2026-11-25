@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { TopBar } from "./components/layout/topBar";
 import { Sidebar, type Screen } from "./components/layout/sidebar";
 import { TicketList } from "./components/ticketList";
 import { AgentList } from "./components/agentList";
 import { AssignScreen } from "./components/assignScreen";
+import { Dashboard } from "./components/dashboard";
 import type { SupportCase } from "./types/supportCase";
 import "./components/layout/appShell.css";
 
@@ -20,27 +21,12 @@ export default function App() {
     setActiveScreen(screen);
   }
 
-  function renderMain() {
-    if (activeScreen === "dashboard") {
-      return (
-        <div className="ticket-list-state">
-          <p>Dashboard — coming soon</p>
-        </div>
-      );
-    }
-
-    if (activeScreen === "tickets") {
-      if (selectedCase) {
-        return <AssignScreen supportCase={selectedCase} />;
-      }
-      return <TicketList onSelectCase={handleSelectCase} />;
-    }
-
-    if (activeScreen === "agents") {
-      return <AgentList />;
-    }
-
-    return null;
+  const screenMap: Record<string, ReactNode> = {
+    dashboard: <Dashboard />,
+    tickets: selectedCase ? (
+      <AssignScreen supportCase={selectedCase} />
+    ) : (<TicketList onSelectCase={handleSelectCase} />),
+    agents: (<AgentList/>)
   }
 
   return (
@@ -48,7 +34,7 @@ export default function App() {
       <TopBar />
       <div className="app-shell__body">
         <Sidebar activeScreen={activeScreen} onNavigate={handleNavigate} />
-        <main className="app-shell__main">{renderMain()}</main>
+        <main className="app-shell__main">{screenMap[activeScreen]}</main>
       </div>
     </div>
   );
